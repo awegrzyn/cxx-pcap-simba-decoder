@@ -1,4 +1,5 @@
 #include "pcap/parser.h"
+#include "protocols/ethernet.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -30,14 +31,20 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         
-        const auto& record = record_result.value();
+        const pcap::Record record = record_result.value();
         count++;
         std::cout << "Record #" << count 
                   << " - time: " << std::fixed << std::setprecision(6) 
                   << record.timestamp()
                   << ", length: " << record.header.incl_len << " bytes" << std::endl;
+            protocols::Ethernet frame;
+                auto parseResult = frame.parse(record);
+                if (!parseResult) {
+                    std::cerr << "Error parsing Ethernet frame: " << static_cast<int>(parseResult.error()) << std::endl;
+                } else {
+                    std::cout << "Processed " << parseResult.value() << " bytes of Ethernet frame" << std::endl;
+                }
     }
-    
     std::cout << "Total records: " << count << std::endl;
     return 0;
 }

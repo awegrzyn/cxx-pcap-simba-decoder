@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cstddef>  // For std::byte
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -30,6 +30,11 @@ public:
     std::byte* getDataPointer() {
         return mData.data();
     }
+    
+    const std::vector<std::byte>& getData() const {
+        return mData;
+    }
+    
 private:
     bool mIsNanosecond;
     std::vector<std::byte> mData;

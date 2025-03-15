@@ -10,7 +10,7 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 
-add_executable(pcap main.cxx pcap/parser.cxx)
+add_executable(pcap main.cxx pcap/parser.cxx protocols/ethernet.cxx)
 target_compile_features(pcap PRIVATE cxx_std_23)
 
 
