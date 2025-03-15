@@ -15,9 +15,8 @@ std::string error_message(Error error) {
     return "Unknown error";
 }
 
-Parser::Parser(const std::string& filename) {
+Parser::Parser() {
     mIsNanosecond = false;
-    open(filename);
 }
 
 Parser::~Parser() {
@@ -50,7 +49,6 @@ std::expected<void, Error> Parser::open(const std::filesystem::path& path) {
 // Reads next record from the file
 std::expected<Record, Error> Parser::readNextRecord() {
     RecordHeader record_header;
-    std::cout << "Trying to read record" << std::endl;
     if (!file.read(reinterpret_cast<char*>(&record_header), sizeof(record_header))) {
         if (file.eof()) {
             file.clear();

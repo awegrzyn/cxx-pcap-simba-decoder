@@ -13,7 +13,8 @@ int main(int argc, char* argv[]) {
     std::string filename = argv[1];
     std::filesystem::path filepath(filename);
     
-    pcap::Parser parser(filepath);
+    pcap::Parser parser;
+    parser.open(filepath);
 
     std::cout << "PCAP version: " << parser.getFileHeader().version_major << "." 
               << parser.getFileHeader().version_minor << std::endl;
