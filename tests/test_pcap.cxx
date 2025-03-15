@@ -4,9 +4,14 @@
 #include <string>
 
 namespace {
-    //std::string pcapPath = std::filesystem::current_path().string() + "/simba-100.pcap";
     std::filesystem::path pcapPath("simba-100.pcap");
+    std::filesystem::path wrongPath("wrong.pcap");
 
+    TEST(PcapParserTest, TryReadingUnexistingFile) {
+        pcap::Parser parser;
+        auto file = parser.open(wrongPath);
+        EXPECT_FALSE(file.has_value());
+    }
     // Test that the parser can read at least one record
     TEST(PcapParserTest, ReadRecord) {
         pcap::Parser parser;
