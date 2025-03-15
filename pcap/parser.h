@@ -43,12 +43,11 @@ public:
     Parser();
     ~Parser();
     std::expected<Record, Error> readNextRecord();
-    const FileHeader& getFileHeader() const { return file_header_; }
+    const FileHeader& getFileHeader() const { return mFileHeader; }
     std::expected<void, Error> open(const std::filesystem::path &path);
 private:
-    std::ifstream file;
-    FileHeader file_header_;
-    bool isValidMagicNumber(uint32_t magic);
+    std::ifstream mFile;
+    FileHeader mFileHeader;
     bool mIsNanosecond;
 };
 
