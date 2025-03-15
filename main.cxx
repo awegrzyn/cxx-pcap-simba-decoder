@@ -1,4 +1,4 @@
-#include "pcap/pcap_parser.h"
+#include "pcap/parser.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -13,25 +13,16 @@ int main(int argc, char* argv[]) {
     std::string filename = argv[1];
     std::filesystem::path filepath(filename);
     
-    pcap::Parser parser;
-    auto open_result = parser.open(filepath);
-    
-    if (!open_result) {
-        std::cerr << "Error: " << pcap::error_message(open_result.error()) << std::endl;
-        return 1;
-    }
+    pcap::Parser parser(filepath);
 
-    std::cout << "PCAP version: " << parser.get_file_header().version_major << "." 
-              << parser.get_file_header().version_minor << std::endl;
-    std::cout << "Timestamp precision: " 
-              << (parser.get_file_header().is_nanosecond() ? "nanosecond" : "microsecond") << std::endl;
+    std::cout << "PCAP version: " << parser.getFileHeader().version_major << "." 
+              << parser.getFileHeader().version_minor << std::endl;
 
     size_t count = 0;
     while (true) {
-        auto record_result = parser.read_next_record();
+        auto record_result = parser.readNextRecord();
         if (!record_result) {
             if (record_result.error() == pcap::Error::UnexpectedEndOfFile) {
-                // End of file reached
                 break;
             }
             std::cerr << "Error: " << pcap::error_message(record_result.error()) << std::endl;
@@ -43,7 +34,7 @@ int main(int argc, char* argv[]) {
         
         std::cout << "Record #" << count 
                   << " - time: " << std::fixed << std::setprecision(6) 
-                  << record.timestamp(parser.get_file_header().is_nanosecond())
+                  << record.timestamp()
                   << ", length: " << record.header.incl_len << " bytes" << std::endl;
     }
     

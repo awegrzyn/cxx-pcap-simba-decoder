@@ -1,4 +1,4 @@
-#include "pcap_parser.h"
+#include "parser.h"
 #include <format>
 #include <iostream>
 
@@ -15,12 +15,9 @@ std::string error_message(Error error) {
     return "Unknown error";
 }
 
-bool FileHeader::is_nanosecond() const {
-    return magic_number == MAGIC_NUMBER_NATIVE_NANO;
-}
-
 Parser::Parser(const std::string& filename) {
-    file.open(filename, std::ios::binary);
+    mIsNanosecond = false;
+    open(filename);
 }
 
 Parser::~Parser() {
@@ -40,19 +37,20 @@ std::expected<void, Error> Parser::open(const std::filesystem::path& path) {
     }
 
     // Check magic number
-    if (!is_valid_magic_number(file_header_.magic_number)) {
+    if (!isValidMagicNumber(file_header_.magic_number)) {
         return std::unexpected(Error::InvalidMagicNumber);
+    }
+    if (file_header_.magic_number == MAGIC_NUMBER_NATIVE_NANO) {
+        mIsNanosecond = true;
     }
 
     return {};
 }
 
 // Reads next record from the file
-std::expected<Record, Error> Parser::read_next_record() {
-    if (!file) {
-        return std::unexpected(Error::ReadError);
-    }
+std::expected<Record, Error> Parser::readNextRecord() {
     RecordHeader record_header;
+    std::cout << "Trying to read record" << std::endl;
     if (!file.read(reinterpret_cast<char*>(&record_header), sizeof(record_header))) {
         if (file.eof()) {
             file.clear();
@@ -60,55 +58,19 @@ std::expected<Record, Error> Parser::read_next_record() {
         }
         return std::unexpected(Error::ReadError);
     }
-    Record record;
+    Record record(mIsNanosecond);
     record.header = record_header;
-    record.data.resize(record_header.incl_len);
+    record.resizeData(record_header.incl_len);
     
-    if (!file.read(reinterpret_cast<char*>(record.data.data()), record_header.incl_len)) {
+    if (!file.read(reinterpret_cast<char*>(record.getDataPointer()), record_header.incl_len)) {
         return std::unexpected(Error::ReadError);
     }
 
     return record;
 }
 
-bool Parser::is_valid_magic_number(uint32_t magic) {
+bool Parser::isValidMagicNumber(uint32_t magic) {
     return magic == MAGIC_NUMBER_NATIVE || magic == MAGIC_NUMBER_NATIVE_NANO;
-}
-
-bool Parser::isOpen() const {
-    return file.is_open();
-}
-
-bool Parser::isEof() const {
-    return file.eof();
-}
-
-Record Parser::readNextRecord() {
-    Record record;
-    
-    // Read record header
-    file.read(reinterpret_cast<char*>(&record.header), sizeof(RecordHeader));
-    
-    if (file) {
-        // Allocate space for data and read it
-        record.data.resize(record.header.incl_len);
-        file.read(reinterpret_cast<char*>(record.data.data()), record.header.incl_len);
-    }
-    
-    return record;
-}
-
-std::vector<Record> Parser::readAllRecords() {
-    std::vector<Record> records;
-    
-    while (file && !file.eof()) {
-        Record record = readNextRecord();
-        if (file) {
-            records.push_back(std::move(record));
-        }
-    }
-    
-    return records;
 }
 
 } // namespace pcap

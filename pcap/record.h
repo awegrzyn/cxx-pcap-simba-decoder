@@ -19,10 +19,20 @@ static_assert(sizeof(RecordHeader) == 16, "RecordHeader size mismatch");
 class Record {
 public:
     RecordHeader header;
-    std::vector<std::byte> data;
-    
-    // Timestamp in seconds (with fractional part)
-    double timestamp(bool is_nanosecond) const;
+    Record(bool isNanosecond) : mIsNanosecond(isNanosecond) {}
+    uint64_t timestamp() const {
+        uint64_t subsecond_divisor = mIsNanosecond ? 1e9 : 1e6;
+        return static_cast<uint64_t>(header.ts_sec + (header.ts_subsec / subsecond_divisor));
+    }
+    void resizeData(size_t size) {
+        mData.resize(size);
+    }
+    std::byte* getDataPointer() {
+        return mData.data();
+    }
+private:
+    bool mIsNanosecond;
+    std::vector<std::byte> mData;
 };
 
 } // namespace pcap

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pcap_record.h"
+#include "record.h"
 #include <cstdint>
 #include <expected>
 #include <filesystem>
@@ -35,29 +35,21 @@ struct FileHeader {
     uint32_t sigfigs;        // Accuracy of timestamps
     uint32_t snaplen;        // Max length saved portion of each packet
     uint32_t network;        // Data link type
-
-    bool is_nanosecond() const;
 };
 
 // PCAP file parser
 class Parser {
 public:
-    Parser() {}
     Parser(const std::string &filename);
     ~Parser();
-
-    std::expected<void, Error> open(const std::filesystem::path &path);
-    std::expected<Record, Error> read_next_record();
-    bool is_valid_magic_number(uint32_t magic);
-    
-    bool isOpen() const;
-    bool isEof() const;
-    
-    const FileHeader& get_file_header() const { return file_header_; }
-
+    std::expected<Record, Error> readNextRecord();
+    const FileHeader& getFileHeader() const { return file_header_; }
 private:
+    std::expected<void, Error> open(const std::filesystem::path &path);
     std::ifstream file;
     FileHeader file_header_;
+    bool isValidMagicNumber(uint32_t magic);
+    bool mIsNanosecond;
 };
 
 } // namespace pcap

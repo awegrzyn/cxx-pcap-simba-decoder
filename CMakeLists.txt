@@ -5,5 +5,5 @@ project(PcapSimba
   LANGUAGES CXX
 )
 
-add_executable(pcap main.cxx pcap/pcap_record.cxx pcap/pcap_parser.cxx)
+add_executable(pcap main.cxx pcap/parser.cxx)
 target_compile_features(pcap PRIVATE cxx_std_23)
