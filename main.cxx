@@ -31,7 +31,6 @@ int main(int argc, char* argv[]) {
         
         const auto& record = record_result.value();
         count++;
-        
         std::cout << "Record #" << count 
                   << " - time: " << std::fixed << std::setprecision(6) 
                   << record.timestamp()
