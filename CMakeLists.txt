@@ -21,7 +21,13 @@ if (GTest_FOUND)
     target_compile_features(test_pcap PRIVATE cxx_std_23)
     target_link_libraries(test_pcap PRIVATE GTest::gtest GTest::gtest_main)
 
+    add_executable(test_ethernet tests/test_ethernet.cxx pcap/parser.cxx protocols/ethernet.cxx)
+    target_compile_features(test_ethernet PRIVATE cxx_std_23)
+    target_link_libraries(test_ethernet PRIVATE GTest::gtest GTest::gtest_main)
+
     enable_testing()
     add_test(NAME test_pcap COMMAND test_pcap)
+    add_test(NAME test_ethernet COMMAND test_ethernet)
     gtest_add_tests(TARGET test_pcap test_pcap)
+    gtest_add_tests(TARGET test_ethernet test_ethernet)
 endif()
