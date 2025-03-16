@@ -10,7 +10,7 @@
 
 namespace protocols {
 
-class IPv4 {
+class Ipv4 {
 public:
     enum class Error {
         InsufficientData,
@@ -21,14 +21,14 @@ public:
     };
 
     // Constructor takes a span of raw packet data
-    IPv4(std::span<const std::byte> data) : mEthernetData(data) {}
+    Ipv4(std::span<const std::byte> data) : mEthernetData(data) {}
 
     // Parse the IPv4 packet
     std::expected<size_t, Error> parse();
 
     // Raw access to addresses
-    std::span<const std::byte> sourceIP() const { return mSourceIP; }
-    std::span<const std::byte> destIP() const { return mDestIP; }
+    std::span<const std::byte> getSourceIp() const { return mSourceIP; }
+    std::span<const std::byte> getDestIp() const { return mDestIP; }
 
     // Access to the payload
     std::span<const std::byte> payload() const { return mPayload; }

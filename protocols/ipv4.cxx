@@ -4,7 +4,7 @@
 
 namespace protocols {
 
-std::expected<size_t, IPv4::Error> IPv4::parse() {
+std::expected<size_t, Ipv4::Error> Ipv4::parse() {
     // Minimum IPv4 header size (without options): 20 bytes
     constexpr size_t MIN_HEADER_SIZE = 20;
     
