@@ -37,10 +37,17 @@ int main(int argc, char* argv[]) {
         std::cout << "Record #" << count << ", length: " << record.getHeader().incl_len << " bytes" << std::endl;
 
         protocols::Ethernet frame(record.getData());
-        auto parseResult = frame.parse();
-
+        auto ethernetResult = frame.parse();
+        if (!ethernetResult) {
+            std::cerr << "Error parsing Ethernet frame: " << static_cast<int>(ethernetResult.error()) << std::endl;
+            return 1;
+        }
         protocols::Ipv4 ipv4(frame.getPayload());
         auto ipv4Result = ipv4.parse();
+        if (!ipv4Result) {
+            std::cerr << "Error parsing IPv4 packet: " << static_cast<int>(ipv4Result.error()) << std::endl;
+            return 1;
+        }
     }
     std::cout << "Total records: " << count << std::endl;
     return 0;
