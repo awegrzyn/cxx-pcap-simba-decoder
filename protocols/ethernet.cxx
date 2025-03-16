@@ -12,9 +12,9 @@ std::expected<size_t, Ethernet::Error> Ethernet::parse() {
         return std::unexpected(Error::InsufficientData);
     }
 
-    mDestMac = std::span<const std::byte>(mRecordData.data(), 6);
-    mSourceMac = std::span<const std::byte>(mRecordData.data() + 6, 6);
-    mPayload = std::span<const std::byte>(mRecordData.begin() + MIN_FRAME_SIZE, mRecordData.end());
+    mDestMac = std::span(mRecordData.data(), 6);
+    mSourceMac = std::span(mRecordData.data() + 6, 6);
+    mPayload = std::span(mRecordData.begin() + MIN_FRAME_SIZE, mRecordData.end());
 
     return MIN_FRAME_SIZE + mPayload.size();
 }

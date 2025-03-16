@@ -19,7 +19,7 @@ public:
         InvalidFormat
     };
     // Constructor
-    Ethernet(const std::vector<std::byte>& data)
+    Ethernet(const std::span<const std::byte> data)
         : mRecordData(data) {}
 
     // Parse Ethernet frame from raw data
@@ -40,7 +40,7 @@ public:
     }
 private:
     // Raw record data
-    const std::vector<std::byte>& mRecordData;
+    const std::span<const std::byte> mRecordData;
 
     // Destination MAC address
     std::span<const std::byte> mDestMac;
