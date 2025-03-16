@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
             if (record_result.error() == pcap::Error::UnexpectedEndOfFile) {
                 break;
             }
-            std::cerr << "Error: " << pcap::error_message(record_result.error()) << std::endl;
+            std::cerr << "Error !" << std::endl;
             return 1;
         }
         
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
                   << " - time: " << std::fixed << std::setprecision(6) 
                   << record.timestamp()
                   << ", length: " << record.header.incl_len << " bytes" << std::endl;
-        protocols::Ethernet frame(record);
+        protocols::Ethernet frame(record.getData());
         auto parseResult = frame.parse();
     }
     std::cout << "Total records: " << count << std::endl;

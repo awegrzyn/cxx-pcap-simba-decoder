@@ -4,17 +4,6 @@
 
 namespace pcap {
 
-std::string error_message(Error error) {
-    switch (error) {
-        case Error::FileNotFound: return "File not found";
-        case Error::ReadError: return "Error reading file";
-        case Error::InvalidMagicNumber: return "Invalid magic number";
-        case Error::UnsupportedVersion: return "Unsupported PCAP version";
-        case Error::UnexpectedEndOfFile: return "Unexpected end of file";
-    }
-    return "Unknown error";
-}
-
 Parser::Parser() {
     mIsNanosecond = false;
 }

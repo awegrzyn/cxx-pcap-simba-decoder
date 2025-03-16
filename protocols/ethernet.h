@@ -1,11 +1,8 @@
 #ifndef ETHERNET_H
 #define ETHERNET_H
 
-#include "../pcap/record.h"
 #include <cstdint>
-#include <string>
 #include <vector>
-#include <array>
 #include <expected>
 #include <span>
 
@@ -23,8 +20,8 @@ public:
         UNSUPPORTED_PROTOCOL
     };
 
-    Ethernet(const pcap::Record& record)
-        : mRecordData(record.getData()) {}
+    Ethernet(const std::vector<std::byte>& data)
+        : mRecordData(data) {}
 
     // Parse Ethernet frame from raw data
     std::expected<size_t, Ethernet::Error> parse();

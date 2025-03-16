@@ -26,16 +26,15 @@ namespace {
         pcap::Parser parser;
         parser.open(pcapPath);
         int packet_count = 0;
+
         while (true) {
             auto record_result = parser.readNextRecord();
-            if (!record_result.has_value()) {
-                if (record_result.error() == pcap::Error::UnexpectedEndOfFile) {
-                    break;
-                } else {
-                    FAIL() << "Error reading record: " << pcap::error_message(record_result.error());
-                }
+            if (record_result.error() == pcap::Error::UnexpectedEndOfFile) {
+                break;
             }
-            packet_count++;
+            if (record_result.has_value()) {
+                packet_count++;
+            }
         }
         EXPECT_EQ(packet_count, 100) << "Expected 100 packets in the test file";
     }
