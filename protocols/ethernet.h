@@ -15,11 +15,10 @@ class Ethernet {
 public:
     // Error types for Ethernet parsing
     enum class Error {
-        INSUFFICIENT_DATA,
-        INVALID_FORMAT,
-        UNSUPPORTED_PROTOCOL
+        InsufficientData,
+        InvalidFormat
     };
-
+    // Constructor
     Ethernet(const std::vector<std::byte>& data)
         : mRecordData(data) {}
 
@@ -35,13 +34,21 @@ public:
     const std::span<const std::byte> getSourceMac() const {
         return mSourceMac;
     }
+    // Get source MAC address as string
     const std::span<const std::byte> getDestMac() const {
         return mDestMac;
     }
 private:
+    // Raw record data
     const std::vector<std::byte>& mRecordData;
+
+    // Destination MAC address
     std::span<const std::byte> mDestMac;
+
+    // Source MAC address
     std::span<const std::byte> mSourceMac;
+
+    // Payload data
     std::span<const std::byte> mPayload;
 };
 

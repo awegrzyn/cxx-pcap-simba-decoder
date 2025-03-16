@@ -9,16 +9,11 @@ std::expected<size_t, Ethernet::Error> Ethernet::parse() {
     
     // Check if we have enough data
     if (mRecordData.size() < MIN_FRAME_SIZE) {
-        return std::unexpected(Error::INSUFFICIENT_DATA);
+        return std::unexpected(Error::InsufficientData);
     }
 
-    // Parse destination MAC (6 bytes)
     mDestMac = std::span<const std::byte>(mRecordData.data(), 6);
-
-    // Parse source MAC (6 bytes)
     mSourceMac = std::span<const std::byte>(mRecordData.data() + 6, 6);
-
-    // Extract payload using vector constructor with iterators
     mPayload = std::span<const std::byte>(mRecordData.begin() + MIN_FRAME_SIZE, mRecordData.end());
 
     return MIN_FRAME_SIZE + mPayload.size();

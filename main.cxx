@@ -30,13 +30,11 @@ int main(int argc, char* argv[]) {
             std::cerr << "Error !" << std::endl;
             return 1;
         }
-        
+
         const pcap::Record record = record_result.value();
         count++;
-        std::cout << "Record #" << count 
-                  << " - time: " << std::fixed << std::setprecision(6) 
-                  << record.timestamp()
-                  << ", length: " << record.header.incl_len << " bytes" << std::endl;
+        std::cout << "Record #" << count << " - time: " << std::fixed << std::setprecision(6) << record.timestamp() << ", length: " << record.header.incl_len << " bytes" << std::endl;
+
         protocols::Ethernet frame(record.getData());
         auto parseResult = frame.parse();
     }
