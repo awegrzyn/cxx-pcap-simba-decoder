@@ -46,8 +46,7 @@ std::expected<Record, Error> Parser::readNextRecord() {
         }
         return std::unexpected(Error::ReadError);
     }
-    Record record(mIsNanosecond);
-    record.header = record_header;
+    Record record(record_header);
     record.resizeData(record_header.incl_len);
     
     if (!mFile.read(reinterpret_cast<char*>(record.getDataPointer()), record_header.incl_len)) {

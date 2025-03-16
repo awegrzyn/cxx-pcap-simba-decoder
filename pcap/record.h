@@ -19,14 +19,13 @@ struct RecordHeader {
 class Record {
 public:
     friend class Parser;
-    RecordHeader header;
-    Record(bool isNanosecond) : mIsNanosecond(isNanosecond) {}
-    uint64_t timestamp() const {
-        uint64_t subsecond_divisor = mIsNanosecond ? 1e9 : 1e6;
-        return static_cast<uint64_t>(header.ts_sec + (header.ts_subsec / subsecond_divisor));
-    }
+    Record(RecordHeader header) : mHeader(header) {}
+
     const std::span<const std::byte> getData() const {
         return std::span<const std::byte>(mData.begin(), mData.end());
+    }
+    const RecordHeader& getHeader() const {
+        return mHeader;
     }
 private:
     void resizeData(size_t size) {
@@ -35,7 +34,7 @@ private:
     std::byte* getDataPointer() {
         return mData.data();
     }
-    bool mIsNanosecond;
+    RecordHeader mHeader;
     std::vector<std::byte> mData;
 };
 
