@@ -19,9 +19,6 @@ enum class Error {
     UnexpectedEndOfFile
 };
 
-// String representation of errors
-std::string error_message(Error error);
-
 // Magic numbers for different endianness
 constexpr uint32_t MAGIC_NUMBER_NATIVE = 0xa1b2c3d4;
 constexpr uint32_t MAGIC_NUMBER_NATIVE_NANO = 0xa1b23c4d;

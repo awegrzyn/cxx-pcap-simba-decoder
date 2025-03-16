@@ -1,5 +1,6 @@
 #include "pcap/parser.h"
 #include "protocols/ethernet.h"
+#include "protocols/ipv4.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -37,6 +38,9 @@ int main(int argc, char* argv[]) {
 
         protocols::Ethernet frame(record.getData());
         auto parseResult = frame.parse();
+
+        protocols::IPv4 ipv4(frame.getPayload());
+        auto ipv4Result = ipv4.parse();
     }
     std::cout << "Total records: " << count << std::endl;
     return 0;
