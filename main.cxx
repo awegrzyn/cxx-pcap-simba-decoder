@@ -1,6 +1,7 @@
 #include "pcap/parser.h"
 #include "protocols/ethernet.h"
 #include "protocols/ipv4.h"
+#include "protocols/udp.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -46,6 +47,12 @@ int main(int argc, char* argv[]) {
         auto ipv4Result = ipv4.parse();
         if (!ipv4Result) {
             std::cerr << "Error parsing IPv4 packet: " << static_cast<int>(ipv4Result.error()) << std::endl;
+            return 1;
+        }
+        protocols::Udp udp(ipv4.payload());
+        auto udpResult = udp.parse();
+        if (!udpResult) {
+            std::cerr << "Error parsing UDP packet: " << static_cast<int>(udpResult.error()) << std::endl;
             return 1;
         }
     }

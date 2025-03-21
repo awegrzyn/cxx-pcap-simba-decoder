@@ -1,6 +1,5 @@
 #include "ipv4.h"
 #include <stdexcept>
-#include <arpa/inet.h>  // For network byte order conversions
 
 namespace protocols {
 
@@ -33,15 +32,13 @@ std::expected<size_t, Ipv4::Error> Ipv4::parse() {
         return std::unexpected(Error::InsufficientData);
     }
 
-    // Total length is in network byte order (big endian)
-    uint16_t totalLength = ntohs(std::to_integer<uint16_t>(mEthernetData[2]));
+    // Total length is in network byte order
+    uint16_t totalLength = std::to_integer<uint16_t>(mEthernetData[2]) << 8 | std::to_integer<uint16_t>(mEthernetData[3]);
 
     // Verify total length doesn't exceed packet size
     if (mEthernetData.size() < totalLength) {
         return std::unexpected(Error::InvalidTotalLength);
     }
-
-    uint16_t headerChecksum = ntohs(std::to_integer<uint16_t>(mEthernetData[10]));
 
     // Source and destination addresses
     mSourceIP = std::span(mEthernetData.data() + 12, 4);
