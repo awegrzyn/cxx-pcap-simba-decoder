@@ -2,6 +2,7 @@
 #include "protocols/ethernet.h"
 #include "protocols/ipv4.h"
 #include "protocols/udp.h"
+#include "protocols/simba.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -53,6 +54,13 @@ int main(int argc, char* argv[]) {
         auto udpResult = udp.parse();
         if (!udpResult) {
             std::cerr << "Error parsing UDP packet: " << static_cast<int>(udpResult.error()) << std::endl;
+            return 1;
+        }
+
+        protocols::SimbaSpectra simba(udp.getPayload());
+        auto simbaResult = simba.parse();
+        if (!simbaResult) {
+            std::cerr << "Error parsing SIMBA SPECTRA message: " << static_cast<int>(simbaResult.error()) << std::endl;
             return 1;
         }
     }
