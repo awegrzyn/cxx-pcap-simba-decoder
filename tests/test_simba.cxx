@@ -25,15 +25,15 @@ namespace Test {
         protocols::SimbaSpectra simba(udp.getPayload());
         auto result = simba.parse();
         EXPECT_TRUE(result.has_value());
-        const std::vector<protocols::SimbaSpectra::OrderUpdate>& orderUpdates = simba.getOrderUpdates();
+        const std::vector<protocols::OrderUpdate>& orderUpdates = simba.getOrderUpdates();
         EXPECT_EQ(orderUpdates.size(), 1);
-        const protocols::SimbaSpectra::OrderUpdate& orderUpdate = orderUpdates.front();
-        EXPECT_EQ(orderUpdate.MDEntryID, 1949243857585620999);
-        EXPECT_EQ(orderUpdate.MDEntryPx(), 144415);
-        EXPECT_EQ(orderUpdate.MDEntrySize, 10);
-        EXPECT_EQ(orderUpdate.MDFlags2, 0);
-        EXPECT_EQ(orderUpdate.SecurityID, 3707491);
-        EXPECT_EQ(orderUpdate.RptSeq, 881716);
+        const protocols::OrderUpdate& orderUpdate = orderUpdates.front();
+        EXPECT_EQ(orderUpdate.MDEntryID(), 1949243857585620999);
+        EXPECT_EQ(orderUpdate.MDEntryPx()(), 144415);
+        EXPECT_EQ(orderUpdate.MDEntrySize(), 10);
+        EXPECT_EQ(orderUpdate.MDFlags2(), 0);
+        EXPECT_EQ(orderUpdate.SecurityID(), 3707491);
+        EXPECT_EQ(orderUpdate.RptSeq(), 881716);
     }
 
 } // namespace

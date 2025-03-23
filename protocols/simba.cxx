@@ -3,50 +3,46 @@
 #include <cstring>
 #include <iostream>
 
+#include "simba/MarketDataHeader.h"
+#include "simba/IncrementalPacketHeader.h"
+#include "simba/SbeMessageHeader.h"
+
 namespace protocols {
 
-// Constructor
 SimbaSpectra::SimbaSpectra(std::span<const std::byte> udpData) 
     : mUdpData(udpData), mParsingOffset(0) {
 }
 
-
-// Implementation of parse method - similar to reference implementation
 std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
     MarketDataHeader marketHeader(mUdpData.begin());
     advanceOffset(MarketDataHeader::size());
+
     if (marketHeader.IsIncremental()) {
-        IncrementalPacketHeader incrementalHeader = parseIncrementalPacketHeader();
+        IncrementalPacketHeader incrementalHeader(mUdpData.begin() + mParsingOffset);
+        advanceOffset(IncrementalPacketHeader::size());
     }
+
     while (mParsingOffset < mUdpData.size()) {
-        SbeMessageHeader sbeHeader = parseSbeMessageHeader();
-        if (sbeHeader.TemplateId == OrderUpdate::templateId()) {
-            mOrderUpdates.emplace_back(parseOrderUpdate());
-        } else if (sbeHeader.TemplateId == OrderExecution::templateId()) {
-            mOrderExecutions.emplace_back(parseOrderExecution());
-        } else if (sbeHeader.TemplateId == OrderBookSnapshot::templateId()) {
-            mOrderBookSnapshots.emplace_back(parseOrderBookSnapshot());
-        } else {
-            mParsingOffset += sbeHeader.BlockLength;
+        SbeMessageHeader sbeHeader(mUdpData.begin() + mParsingOffset);
+        advanceOffset(SbeMessageHeader::size());
+        switch (sbeHeader.TemplateId()) {
+            case OrderUpdate::templateId():
+                mOrderUpdates.emplace_back(mUdpData.begin() + mParsingOffset);
+                advanceOffset(OrderUpdate::size());
+                break;
+            /*case OrderExecution::templateId():
+                //mOrderExecutions.emplace_back(parseOrderExecution());
+                break;
+            case OrderBookSnapshot::templateId():
+                //mOrderBookSnapshots.emplace_back(parseOrderBookSnapshot());
+                break;*/
+            default:
+                mParsingOffset += sbeHeader.BlockLength();
         }
     }
     return true;
 }
-
-SimbaSpectra::IncrementalPacketHeader SimbaSpectra::parseIncrementalPacketHeader() const {
-    IncrementalPacketHeader header;
-    std::memcpy(&header, mUdpData.data() + mParsingOffset, IncrementalPacketHeader::size());
-    mParsingOffset += IncrementalPacketHeader::size();
-    return header;
-}
-
-SimbaSpectra::SbeMessageHeader SimbaSpectra::parseSbeMessageHeader() const {
-    SbeMessageHeader header;
-    std::memcpy(&header, mUdpData.data() + mParsingOffset, SbeMessageHeader::size());
-    mParsingOffset += SbeMessageHeader::size();
-    return header;
-}
-
+/*
 SimbaSpectra::OrderUpdate SimbaSpectra::parseOrderUpdate() const {
     OrderUpdate update;
     std::memcpy(&update, mUdpData.data() + mParsingOffset, OrderUpdate::size());
@@ -70,5 +66,5 @@ SimbaSpectra::OrderBookSnapshot SimbaSpectra::parseOrderBookSnapshot() const {
         mParsingOffset += OrderBookSnapshot::Entry::size();
     }
     return snapshot;
-}
+}*/
 } // namespace protocols
