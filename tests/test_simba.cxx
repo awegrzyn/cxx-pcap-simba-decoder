@@ -12,7 +12,7 @@
 namespace Test {
     std::filesystem::path pcapPath("simba-100.pcap");
 
-    TEST(SimbaParserTest, MessageType) {
+    TEST(SimbaParserTest, SingleOrderUpdate) {
         pcap::Parser parser;
         parser.open(pcapPath);
         auto record = parser.readNextRecord().value();
@@ -34,10 +34,6 @@ namespace Test {
         EXPECT_EQ(orderUpdate.MDFlags2, 0);
         EXPECT_EQ(orderUpdate.SecurityID, 3707491);
         EXPECT_EQ(orderUpdate.RptSeq, 881716);
-
-
-
-
     }
 
 } // namespace

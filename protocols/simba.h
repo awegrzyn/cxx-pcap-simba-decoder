@@ -12,13 +12,13 @@
 
 // Forward declare the test class
 namespace Test {
-    class SimbaParserTest_MessageType_Test;
+    class SimbaParserTest_SingleOrderUpdate_Test;
 }
 
 namespace protocols {
 
 class SimbaSpectra {
-    friend class Test::SimbaParserTest_MessageType_Test;
+    friend class Test::SimbaParserTest_SingleOrderUpdate_Test;
 public:
     static constexpr std::string_view ProtocolName = "Simba Spectra";
     static constexpr std::uint8_t VersionMajor = 5;
