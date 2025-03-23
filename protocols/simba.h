@@ -6,6 +6,7 @@
 #include <vector>
 #include <memory>
 #include <expected>
+#include "simba/MarketDataHeader.h"
 
 // Use packed structs for binary protocol parsing
 #pragma pack(push, 1)
@@ -35,22 +36,6 @@ public:
         UnsupportedMessageType
     };
 private:
-    struct MarketDataHeader {
-        uint32_t MsgSeqNum;
-        uint16_t MsgSize;
-        uint16_t MsgFlags;
-        uint64_t SendingTime;
-        bool IsFragmented() const noexcept { return MsgFlags & 0x1; }
-        bool IsStartOfSnapshot() const noexcept { return MsgFlags & 0x2; }
-        bool IsEndOfSnapshot() const noexcept { return MsgFlags & 0x4; }
-        bool IsIncremental() const noexcept { return MsgFlags & 0x8; }
-        bool IsPossDupFlag() const noexcept { return MsgFlags & 0x10; }
-
-        static consteval std::size_t size() {
-            return sizeof(MsgSeqNum) + sizeof(MsgSize) + sizeof(MsgFlags) + sizeof(SendingTime);
-        }
-    };
-
     struct IncrementalPacketHeader {
         uint64_t TransactTime;
         uint32_t ExchangeTradingSessionID;
@@ -217,7 +202,6 @@ public:
     std::expected<bool, Error> parse();
     const std::vector<OrderUpdate>& getOrderUpdates() const noexcept { return mOrderUpdates; }
 private:
-    MarketDataHeader parseMarketDataHeader() const;
     IncrementalPacketHeader parseIncrementalPacketHeader() const;
     SbeMessageHeader parseSbeMessageHeader() const;
     OrderUpdate parseOrderUpdate() const;
@@ -225,6 +209,7 @@ private:
     OrderBookSnapshot parseOrderBookSnapshot() const;
 
     mutable std::size_t mParsingOffset;
+    void advanceOffset(std::size_t size) { mParsingOffset += size; }
     std::span<const std::byte> mUdpData;
     std::vector<OrderUpdate> mOrderUpdates;
     std::vector<OrderExecution> mOrderExecutions;

@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
-#include <iomanip>
 
 namespace protocols {
 
@@ -14,8 +13,9 @@ SimbaSpectra::SimbaSpectra(std::span<const std::byte> udpData)
 
 // Implementation of parse method - similar to reference implementation
 std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
-    MarketDataHeader header = parseMarketDataHeader();
-    if (header.IsIncremental()) {
+    MarketDataHeader marketHeader(mUdpData.begin());
+    advanceOffset(MarketDataHeader::size());
+    if (marketHeader.IsIncremental()) {
         IncrementalPacketHeader incrementalHeader = parseIncrementalPacketHeader();
     }
     while (mParsingOffset < mUdpData.size()) {
@@ -31,12 +31,6 @@ std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
         }
     }
     return true;
-}
-SimbaSpectra::MarketDataHeader SimbaSpectra::parseMarketDataHeader() const {
-    MarketDataHeader header;
-    std::memcpy(&header, mUdpData.data() + mParsingOffset, MarketDataHeader::size());
-    mParsingOffset += MarketDataHeader::size();
-    return header;
 }
 
 SimbaSpectra::IncrementalPacketHeader SimbaSpectra::parseIncrementalPacketHeader() const {
