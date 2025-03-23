@@ -36,7 +36,6 @@ int main(int argc, char* argv[]) {
 
         const pcap::Record record = record_result.value();
         count++;
-        std::cout << "Record #" << count << ", length: " << record.getHeader().incl_len << " bytes" << std::endl;
 
         protocols::Ethernet frame(record.getData());
         auto ethernetResult = frame.parse();
@@ -63,6 +62,7 @@ int main(int argc, char* argv[]) {
             std::cerr << "Error parsing SIMBA SPECTRA message: " << static_cast<int>(simbaResult.error()) << std::endl;
             return 1;
         }
+        std::cout << simba.toJson() << std::endl;
     }
     std::cout << "Total records: " << count << std::endl;
     return 0;

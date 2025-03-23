@@ -34,8 +34,11 @@ namespace Test {
         EXPECT_EQ(orderUpdate.MDFlags2(), 0);
         EXPECT_EQ(orderUpdate.SecurityID(), 3707491);
         EXPECT_EQ(orderUpdate.RptSeq(), 881716);
+        EXPECT_EQ(static_cast<uint8_t>(orderUpdate.MDUpdateAction_()), 2);
+        EXPECT_EQ(static_cast<char>(orderUpdate.MDEntryType_()), '0');
     }
-    TEST(SimbaParserTest, SingleOrderExecution) {
+
+    TEST(SimbaParserTest, EmptyOrderExecution) {
         pcap::Parser parser;
         parser.open(pcapPath);
         auto record = parser.readNextRecord().value();
@@ -51,6 +54,7 @@ namespace Test {
         const std::vector<protocols::OrderExecution>& orderExecutions = simba.getOrderExecutions();
         EXPECT_EQ(orderExecutions.size(), 0);
     }
+
     TEST(SimbaParserTest, SingleOrderBookSnapshot) {
         pcap::Parser parser;
         parser.open(pcapPath);

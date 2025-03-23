@@ -37,6 +37,7 @@ public:
     const std::vector<OrderUpdate>& getOrderUpdates() const noexcept { return mOrderUpdates; }
     const std::vector<OrderExecution>& getOrderExecutions() const noexcept { return mOrderExecutions; }
     const std::vector<OrderBookSnapshot>& getOrderBookSnapshots() const noexcept { return mOrderBookSnapshots; }
+    std::string toJson() const;
 
 private:
     mutable std::size_t mParsingOffset;
