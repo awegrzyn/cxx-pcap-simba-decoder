@@ -74,6 +74,7 @@ namespace Test {
         EXPECT_EQ(orderBookSnapshot.LastMsgSeqNumProcessed(), 70157230);
         EXPECT_EQ(orderBookSnapshot.RptSeq(), 242796);
         EXPECT_EQ(orderBookSnapshot.ExchangeTradingSessionID(), 6902);
+        EXPECT_EQ(orderBookSnapshot.NoMDEntries().numInGroup, 23);
     }
 
 } // namespace
