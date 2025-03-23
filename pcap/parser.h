@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PCAP_PARSER_H
+#define PCAP_PARSER_H
 
 #include "record.h"
 #include <cstdint>
@@ -49,3 +50,4 @@ private:
 };
 
 } // namespace pcap
+#endif // PCAP_PARSER_H

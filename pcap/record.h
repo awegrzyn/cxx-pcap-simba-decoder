@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PCAP_RECORD_H
+#define PCAP_RECORD_H
 
 #include <cstddef>
 #include <cstdint>
@@ -39,3 +40,4 @@ private:
 };
 
 } // namespace pcap
+#endif // PCAP_RECORD_H
