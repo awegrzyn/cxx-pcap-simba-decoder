@@ -12,15 +12,9 @@
 #include "simba/OrderUpdate.h"
 #include "simba/OrderExecution.h"
 
-// Forward declare the test class
-namespace Test {
-    class SimbaParserTest_SingleOrderUpdate_Test;
-}
-
 namespace protocols {
 
 class SimbaSpectra {
-    friend class Test::SimbaParserTest_SingleOrderUpdate_Test;
 public:
     static constexpr std::string_view ProtocolName = "Simba Spectra";
     static constexpr std::uint8_t VersionMajor = 5;
@@ -178,6 +172,8 @@ public:
     SimbaSpectra(std::span<const std::byte> udpData);
     std::expected<bool, Error> parse();
     const std::vector<OrderUpdate>& getOrderUpdates() const noexcept { return mOrderUpdates; }
+    const std::vector<OrderExecution>& getOrderExecutions() const noexcept { return mOrderExecutions; }
+    //const std::vector<OrderBookSnapshot>& getOrderBookSnapshots() const noexcept { return mOrderBookSnapshots; }
 private:
     mutable std::size_t mParsingOffset;
     void advanceOffset(std::size_t size) { mParsingOffset += size; }

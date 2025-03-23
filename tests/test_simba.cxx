@@ -35,5 +35,21 @@ namespace Test {
         EXPECT_EQ(orderUpdate.SecurityID(), 3707491);
         EXPECT_EQ(orderUpdate.RptSeq(), 881716);
     }
+    TEST(SimbaParserTest, SingleOrderExecution) {
+        pcap::Parser parser;
+        parser.open(pcapPath);
+        auto record = parser.readNextRecord().value();
+        protocols::Ethernet frame(record.getData());
+        frame.parse();
+        protocols::Ipv4 ipv4(frame.getPayload());
+        ipv4.parse();
+        protocols::Udp udp(ipv4.payload());
+        auto parsed = udp.parse();
+        protocols::SimbaSpectra simba(udp.getPayload());
+        auto result = simba.parse();
+        EXPECT_TRUE(result.has_value());
+        const std::vector<protocols::OrderExecution>& orderExecutions = simba.getOrderExecutions();
+        EXPECT_EQ(orderExecutions.size(), 0);
+    }
 
 } // namespace
