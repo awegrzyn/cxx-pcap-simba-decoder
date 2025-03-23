@@ -30,10 +30,11 @@ std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
                 mOrderUpdates.emplace_back(mUdpData.begin() + mParsingOffset);
                 advanceOffset(OrderUpdate::size());
                 break;
-            /*case OrderExecution::templateId():
-                //mOrderExecutions.emplace_back(parseOrderExecution());
+            case OrderExecution::templateId():
+                mOrderExecutions.emplace_back(mUdpData.begin() + mParsingOffset);
+                advanceOffset(OrderExecution::size());
                 break;
-            case OrderBookSnapshot::templateId():
+            /*case OrderBookSnapshot::templateId():
                 //mOrderBookSnapshots.emplace_back(parseOrderBookSnapshot());
                 break;*/
             default:

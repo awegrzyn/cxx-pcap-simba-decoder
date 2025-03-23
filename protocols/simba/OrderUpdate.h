@@ -28,15 +28,15 @@ public:
     OrderUpdate(const std::span<const std::byte>::iterator rawDataBegin) : mRawData(rawDataBegin, OrderUpdate::size()) {
         assert(mRawData.size() == OrderUpdate::size());
     }
-    int64_t MDEntryID() const { return *reinterpret_cast<const int64_t*>(mRawData.data()); }
-    Decimal5 MDEntryPx() const { return *reinterpret_cast<const Decimal5*>(mRawData.data() + sizeof(int64_t)); }
-    int64_t MDEntrySize() const { return *reinterpret_cast<const int64_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size()); }
-    MDFlagsSet MDFlags() const { return *reinterpret_cast<const MDFlagsSet*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t)); }
-    uint64_t MDFlags2() const { return *reinterpret_cast<const uint64_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet)); }
-    int32_t SecurityID() const { return *reinterpret_cast<const int32_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t)); }
-    uint32_t RptSeq() const { return *reinterpret_cast<const uint32_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t) + sizeof(int32_t)); }
-    MDUpdateAction MDUpdateAction_() const { return *reinterpret_cast<const MDUpdateAction*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t) + sizeof(int32_t) + sizeof(uint32_t)); }
-    MDEntryType MDEntryType_() const { return *reinterpret_cast<const MDEntryType*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t) + sizeof(int32_t) + sizeof(uint32_t) + sizeof(MDUpdateAction)); }
+    const int64_t MDEntryID() const { return *reinterpret_cast<const int64_t*>(mRawData.data()); }
+    const Decimal5 MDEntryPx() const { return *reinterpret_cast<const Decimal5*>(mRawData.data() + sizeof(int64_t)); }
+    const int64_t MDEntrySize() const { return *reinterpret_cast<const int64_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size()); }
+    const MDFlagsSet MDFlags() const { return *reinterpret_cast<const MDFlagsSet*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t)); }
+    const uint64_t MDFlags2() const { return *reinterpret_cast<const uint64_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet)); }
+    const int32_t SecurityID() const { return *reinterpret_cast<const int32_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t)); }
+    const uint32_t RptSeq() const { return *reinterpret_cast<const uint32_t*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t) + sizeof(int32_t)); }
+    const MDUpdateAction MDUpdateAction_() const { return *reinterpret_cast<const MDUpdateAction*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t) + sizeof(int32_t) + sizeof(uint32_t)); }
+    const MDEntryType MDEntryType_() const { return *reinterpret_cast<const MDEntryType*>(mRawData.data() + sizeof(int64_t) + Decimal5::size() + sizeof(int64_t) + sizeof(MDFlagsSet) + sizeof(uint64_t) + sizeof(int32_t) + sizeof(uint32_t) + sizeof(MDUpdateAction)); }
 private:
     const std::span<const std::byte> mRawData;
 };
