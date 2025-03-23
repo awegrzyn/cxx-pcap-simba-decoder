@@ -9,16 +9,17 @@
 #include <filesystem>
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <pcap_file>\n";
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <pcap_file> <json_file>\n";
         return 1;
     }
 
-    std::string filename = argv[1];
-    std::filesystem::path filepath(filename);
+    std::filesystem::path pcapFile(argv[1]);
+    std::filesystem::path jsonFile(argv[2]);
+    std::ofstream jsonStream(jsonFile);
     
     pcap::Parser parser;
-    parser.open(filepath);
+    parser.open(pcapFile);
 
     std::cout << "PCAP version: " << parser.getFileHeader().version_major << "." 
               << parser.getFileHeader().version_minor << std::endl;
@@ -62,7 +63,7 @@ int main(int argc, char* argv[]) {
             std::cerr << "Error parsing SIMBA SPECTRA message: " << static_cast<int>(simbaResult.error()) << std::endl;
             return 1;
         }
-        std::cout << simba.toJson() << std::endl;
+        jsonStream << simba.toJson() << '\n';
     }
     std::cout << "Total records: " << count << std::endl;
     return 0;
