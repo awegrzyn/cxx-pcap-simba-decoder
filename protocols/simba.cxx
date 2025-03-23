@@ -48,11 +48,11 @@ std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
 
 std::string SimbaSpectra::toJson() const {
     std::ostringstream json;
+
+    // Order updates
     json << R"({"OrderUpdates":[)";
-
-    for (size_t i = 0; i < mOrderUpdates.size(); ++i) {
-        const auto& orderUpdate = mOrderUpdates[i];
-
+    for (size_t i = 0; i < mOrderUpdates.size(); i++) {
+        const auto& orderUpdate = mOrderUpdates.at(i);
         json << R"({"MdEntryId":)" << orderUpdate.MDEntryID()
              << R"(,"MdEntryPx":)" << orderUpdate.MDEntryPx()()
              << R"(,"MdEntrySize":)" << orderUpdate.MDEntrySize()
@@ -64,6 +64,62 @@ std::string SimbaSpectra::toJson() const {
              << R"(,"MdEntryType":")" << static_cast<char>(orderUpdate.MDEntryType_()) << "\""
              << "}";
         if (i < mOrderUpdates.size() - 1) {
+            json << ",";
+        }
+    }
+    json << "],";
+
+    // Order executions
+    json << R"("OrderExecutions":[)";
+    for (size_t i = 0; i < mOrderExecutions.size(); i++) {
+        const auto& orderExecution = mOrderExecutions.at(i);
+        json << R"({"MdEntryId":)" << orderExecution.MDEntryID()
+             << R"(,"MdEntryPx":)" << orderExecution.MDEntryPx()()
+             << R"(,"MdEntrySize":)" << orderExecution.MDEntrySize()
+             << R"(,"LastPx":)" << orderExecution.LastPx()()
+             << R"(,"LastQty":)" << orderExecution.LastQty()
+             << R"(,"TradeId":)" << orderExecution.TradeID()
+             << R"(,"MdFlags":)" << static_cast<uint64_t>(orderExecution.MDFlags())
+             << R"(,"MdFlags2":)" << orderExecution.MDFlags2()
+             << R"(,"SecurityId":)" << orderExecution.SecurityID()
+             << R"(,"RptSeq":)" << orderExecution.RptSeq()
+             << R"(,"MdUpdateAction":)" << static_cast<int>(orderExecution.MDUpdateAction_())
+             << R"(,"MdEntryType":")" << static_cast<char>(orderExecution.MDEntryType_()) << "\""
+             << "}";
+        if (i < mOrderExecutions.size() - 1) {
+            json << ",";
+        }
+    }
+    json << "],";
+
+    // Order book snapshots
+    json << R"("OrderBookSnapshots":[)";
+    for (size_t i = 0; i < mOrderBookSnapshots.size(); i++) {
+        const auto& orderBookSnapshot = mOrderBookSnapshots.at(i);
+        json << R"({"SecurityId":)" << orderBookSnapshot.SecurityID()
+             << R"(,"LastMsgSeqNumProcessed":)" << orderBookSnapshot.LastMsgSeqNumProcessed()
+             << R"(,"RptSeq":)" << orderBookSnapshot.RptSeq()
+             << R"(,"ExchangeTradingSessionId":)" << orderBookSnapshot.ExchangeTradingSessionID()
+             << R"(,"NoMDEntries":{"BlockLength":)" << orderBookSnapshot.NoMDEntries().blockLength
+             << R"(,"NumInGroup":)" << static_cast<int>(orderBookSnapshot.NoMDEntries().numInGroup) << "}";
+        json << R"(,"Entries":[)";
+        const auto entries = orderBookSnapshot.getEntries();
+        for (size_t j = 0; j < entries.size(); j++) {
+            const auto& entry = entries.at(j);
+            json << R"({"MdEntryId":)" << entry.MDEntryID
+                 << R"(,"TransactTime":)" << entry.TransactTime
+                 << R"(,"MdEntryPx":)" << entry.MDEntryPx()
+                 << R"(,"MdEntrySize":)" << entry.MDEntrySize
+                 << R"(,"TradeId":)" << entry.TradeID
+                 << R"(,"MdFlags":)" << static_cast<uint64_t>(entry.MDFlags)
+                 << R"(,"MdFlags2":)" << entry.MDFlags2
+                 << R"(,"MdEntryType":")" << static_cast<char>(entry.MDEntryType_) << "\"}";
+            if (j < entries.size() - 1) {
+                json << ",";
+            }
+        }
+        json << "]";
+        if (i < mOrderBookSnapshots.size() - 1) {
             json << ",";
         }
     }
