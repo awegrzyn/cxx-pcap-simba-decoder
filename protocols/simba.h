@@ -24,7 +24,7 @@ public:
         UnsupportedMessageType
     };
     
-    // Market Data Header structure (16 bytes) - matches reference
+private:
     struct MarketDataHeader {
         uint32_t MsgSeqNum;
         uint16_t MsgSize;
@@ -40,8 +40,7 @@ public:
             return sizeof(MsgSeqNum) + sizeof(MsgSize) + sizeof(MsgFlags) + sizeof(SendingTime);
         }
     };
-    
-    // Incremental Packet Header structure - matches reference
+
     struct IncrementalPacketHeader {
         uint64_t TransactTime;
         uint32_t ExchangeTradingSessionID;
@@ -53,7 +52,7 @@ public:
             return 4294967295;
         }
     };
-    
+
     // SBE Message Header - matches reference
     struct SbeMessageHeader {
         uint16_t BlockLength;
@@ -129,6 +128,7 @@ public:
             return 1e-5;
         }
     };
+
     // TemplateID=15
     struct OrderUpdate {
         int64_t MDEntryID;
@@ -143,6 +143,9 @@ public:
 
         static consteval std::size_t size() {
             return sizeof(MDEntryID) + sizeof(MDEntryPx.mantissa) + sizeof(MDEntrySize) + sizeof(MDFlags) + sizeof(MDFlags2) + sizeof(SecurityID) + sizeof(RptSeq) + sizeof(MDUpdateAction) + sizeof(MDEntryType);
+        }
+        static consteval uint16_t templateId() {
+            return 15;
         }
     };
 
@@ -164,7 +167,10 @@ public:
         static consteval std::size_t size() {
             return sizeof(MDEntryID) + sizeof(MDEntryPx.mantissa) + sizeof(MDEntrySize) + sizeof(LastPx.mantissa) + sizeof(LastQty) + sizeof(TradeID) + sizeof(MDFlags) + sizeof(MDFlags2) + sizeof(SecurityID) + sizeof(RptSeq) + sizeof(MDUpdateAction) + sizeof(MDEntryType);
         }
-    }; 
+        static consteval uint16_t templateId() {
+            return 16;
+        }
+    };
 
     // TemplateID=17
     struct OrderBookSnapshot {
@@ -192,14 +198,23 @@ public:
         static consteval std::size_t size() {
             return sizeof(SecurityID) + sizeof(LastMsgSeqNumProcessed) + sizeof(RptSeq) + sizeof(ExchangeTradingSessionID) + GroupSize::size();
         }
+        static consteval uint16_t templateId() {
+            return 17;
+        }
     };
-    // Constructor takes UDP payload
+public:
     SimbaSpectra(std::span<const std::byte> udpData);
-
     std::expected<bool, Error> parse();
-    
+    MarketDataHeader parseMarketDataPacketHeader() const;
+    IncrementalPacketHeader parseIncrementalPacketHeader() const;
+    SbeMessageHeader parseSBEHeader() const;
+
 private:
+    std::size_t mParsingOffset;
     std::span<const std::byte> mUdpData;
+    std::vector<OrderUpdate> mOrderUpdates;
+    std::vector<OrderExecution> mOrderExecutions;
+    std::vector<OrderBookSnapshot> mOrderBookSnapshots;
 };
 
 } // namespace protocols
