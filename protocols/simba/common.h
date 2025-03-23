@@ -46,7 +46,7 @@ struct GroupSize {
 
 struct Decimal5 {
     int64_t mantissa;
-    int64_t operator()() const {
+    double operator()() const {
         return mantissa * 1e-5;
     }
     static consteval std::size_t size() {
@@ -56,13 +56,13 @@ struct Decimal5 {
 
 struct Decimal5NULL {
     int64_t mantissa;
-    static constexpr int64_t MAX_VALUE = 9223372036854775806;
     static constexpr int64_t NULL_VALUE = 9223372036854775807;
+    double operator()() const {
+        return mantissa == NULL_VALUE ? 0 : mantissa * 1e-5;
+    }
+
     static consteval std::size_t size() {
         return sizeof(mantissa);
     }    
-    static consteval double exponent() {
-        return 1e-5;
-    }
 };
 #endif // COMMON_H

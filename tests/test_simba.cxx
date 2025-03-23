@@ -75,6 +75,14 @@ namespace Test {
         EXPECT_EQ(orderBookSnapshot.RptSeq(), 242796);
         EXPECT_EQ(orderBookSnapshot.ExchangeTradingSessionID(), 6902);
         EXPECT_EQ(orderBookSnapshot.NoMDEntries().numInGroup, 23);
+        const std::vector<protocols::OrderBookSnapshot::Entry> entries = orderBookSnapshot.getEntries();
+        EXPECT_EQ(entries.size(), 23);
+        const protocols::OrderBookSnapshot::Entry& entry = entries.front();
+        EXPECT_EQ(entry.MDEntryID, 2016797851996127585);
+        EXPECT_EQ(entry.TransactTime, 1696867117623702646);
+        EXPECT_FLOAT_EQ(entry.MDEntryPx(), 1006.5);
+        EXPECT_EQ(entry.MDEntrySize, 2);
+        EXPECT_EQ(entry.TradeID, 0);
     }
 
 } // namespace
