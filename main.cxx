@@ -58,11 +58,11 @@ int main(int argc, char* argv[]) {
         }
 
         protocols::SimbaSpectra simba(udp.getPayload());
-        auto simbaResult = simba.parse();
-        if (!simbaResult) {
+        //auto simbaResult = simba.parse();
+        /*if (!simbaResult) {
             std::cerr << "Error parsing SIMBA SPECTRA message: " << static_cast<int>(simbaResult.error()) << std::endl;
             return 1;
-        }
+        }*/
     }
     std::cout << "Total records: " << count << std::endl;
     return 0;

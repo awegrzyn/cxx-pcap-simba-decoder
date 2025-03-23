@@ -1,5 +1,6 @@
 #include "udp.h"
 #include <arpa/inet.h>
+#include <iostream>
 
 namespace protocols {
 
@@ -28,8 +29,8 @@ std::expected<size_t, Udp::Error> Udp::parse() {
     }
 
     // Set the payload (data after the header)
-    mPayload = std::span(mIpData.begin() + UDP_HEADER_SIZE, mIpData.begin() + length);
-
+    mData = std::span(mIpData.begin() + UDP_HEADER_SIZE, mIpData.begin() + length);
+    
     return length;
 }
 

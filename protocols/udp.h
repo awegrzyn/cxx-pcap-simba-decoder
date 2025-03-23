@@ -21,11 +21,11 @@ public:
     // Getters
     uint16_t getSourcePort() const { return mSourcePort; }
     uint16_t getDestinationPort() const { return mDestPort; }
-    std::span<const std::byte> getPayload() const { return mPayload; }
+    std::span<const std::byte> getPayload() const { return mData; }
 
 private:
     std::span<const std::byte> mIpData;
-    std::span<const std::byte> mPayload;
+    std::span<const std::byte> mData;
     uint16_t mSourcePort;
     uint16_t mDestPort;
 };
