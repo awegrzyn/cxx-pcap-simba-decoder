@@ -49,8 +49,11 @@ std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
 std::string SimbaSpectra::toJson() const {
     std::ostringstream json;
 
+    // Start with opening the main JSON object
+    json << "{";
+
     // Order updates
-    json << R"({"OrderUpdates":[)";
+    json << R"("OrderUpdates":[)";
     for (size_t i = 0; i < mOrderUpdates.size(); i++) {
         const auto& orderUpdate = mOrderUpdates.at(i);
         json << R"({"MdEntryId":)" << orderUpdate.MDEntryID()
@@ -67,10 +70,10 @@ std::string SimbaSpectra::toJson() const {
             json << ",";
         }
     }
-    json << "],";
+    json << "]";
 
     // Order executions
-    json << R"("OrderExecutions":[)";
+    json << R"(,"OrderExecutions":[)";
     for (size_t i = 0; i < mOrderExecutions.size(); i++) {
         const auto& orderExecution = mOrderExecutions.at(i);
         json << R"({"MdEntryId":)" << orderExecution.MDEntryID()
@@ -90,41 +93,57 @@ std::string SimbaSpectra::toJson() const {
             json << ",";
         }
     }
-    json << "],";
+    json << "]";
 
     // Order book snapshots
-    json << R"("OrderBookSnapshots":[)";
+    json << R"(,"OrderBookSnapshots":[)";
     for (size_t i = 0; i < mOrderBookSnapshots.size(); i++) {
         const auto& orderBookSnapshot = mOrderBookSnapshots.at(i);
-        json << R"({"SecurityId":)" << orderBookSnapshot.SecurityID()
+        
+        // Start snapshot object
+        json << "{";
+        
+        // Add snapshot fields
+        json << R"("SecurityId":)" << orderBookSnapshot.SecurityID()
              << R"(,"LastMsgSeqNumProcessed":)" << orderBookSnapshot.LastMsgSeqNumProcessed()
              << R"(,"RptSeq":)" << orderBookSnapshot.RptSeq()
              << R"(,"ExchangeTradingSessionId":)" << orderBookSnapshot.ExchangeTradingSessionID()
              << R"(,"NoMDEntries":{"BlockLength":)" << orderBookSnapshot.NoMDEntries().blockLength
              << R"(,"NumInGroup":)" << static_cast<int>(orderBookSnapshot.NoMDEntries().numInGroup) << "}";
-        json << R"(,"Entries":[)";
+        
+        // Add entries only if there are any
         const auto entries = orderBookSnapshot.getEntries();
-        for (size_t j = 0; j < entries.size(); j++) {
-            const auto& entry = entries.at(j);
-            json << R"({"MdEntryId":)" << entry.MDEntryID
-                 << R"(,"TransactTime":)" << entry.TransactTime
-                 << R"(,"MdEntryPx":)" << entry.MDEntryPx()
-                 << R"(,"MdEntrySize":)" << entry.MDEntrySize
-                 << R"(,"TradeId":)" << entry.TradeID
-                 << R"(,"MdFlags":)" << static_cast<uint64_t>(entry.MDFlags)
-                 << R"(,"MdFlags2":)" << entry.MDFlags2
-                 << R"(,"MdEntryType":")" << static_cast<char>(entry.MDEntryType_) << "\"}";
-            if (j < entries.size() - 1) {
-                json << ",";
+        if (!entries.empty()) {
+            json << R"(,"Entries":[)";
+            for (size_t j = 0; j < entries.size(); j++) {
+                const auto& entry = entries.at(j);
+                json << R"({"MdEntryId":)" << entry.MDEntryID
+                     << R"(,"TransactTime":)" << entry.TransactTime
+                     << R"(,"MdEntryPx":)" << entry.MDEntryPx()
+                     << R"(,"MdEntrySize":)" << entry.MDEntrySize
+                     << R"(,"TradeId":)" << entry.TradeID
+                     << R"(,"MdFlags":)" << static_cast<uint64_t>(entry.MDFlags)
+                     << R"(,"MdFlags2":)" << entry.MDFlags2
+                     << R"(,"MdEntryType":")" << static_cast<char>(entry.MDEntryType_) << "\""
+                     << "}";
+                if (j < entries.size() - 1) {
+                    json << ",";
+                }
             }
+            json << "]";
         }
-        json << "]";
+        
+        // Close snapshot object
+        json << "}";
+        
         if (i < mOrderBookSnapshots.size() - 1) {
             json << ",";
         }
     }
-
-    json << "]}";
+    json << "]";
+    
+    // Close the main JSON object
+    json << "}";
     return json.str();
 }
 } // namespace protocols
