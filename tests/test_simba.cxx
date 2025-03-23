@@ -9,7 +9,7 @@
 #include <sstream>
 #include <iomanip>
 
-namespace {
+namespace Test {
     std::filesystem::path pcapPath("simba-100.pcap");
 
     TEST(SimbaParserTest, MessageType) {
@@ -24,7 +24,20 @@ namespace {
         auto parsed = udp.parse();
         protocols::SimbaSpectra simba(udp.getPayload());
         auto result = simba.parse();
-        //EXPECT_TRUE(result.has_value());
-        //EXPECT_EQ(simba.getMessageType(), protocols::SimbaSpectra::MessageType::MarketData);
+        EXPECT_TRUE(result.has_value());
+        const std::vector<protocols::SimbaSpectra::OrderUpdate>& orderUpdates = simba.getOrderUpdates();
+        EXPECT_EQ(orderUpdates.size(), 1);
+        const protocols::SimbaSpectra::OrderUpdate& orderUpdate = orderUpdates.front();
+        EXPECT_EQ(orderUpdate.MDEntryID, 1949243857585620999);
+        EXPECT_EQ(orderUpdate.MDEntryPx(), 144415);
+        EXPECT_EQ(orderUpdate.MDEntrySize, 10);
+        EXPECT_EQ(orderUpdate.MDFlags2, 0);
+        EXPECT_EQ(orderUpdate.SecurityID, 3707491);
+        EXPECT_EQ(orderUpdate.RptSeq, 881716);
+
+
+
+
     }
+
 } // namespace

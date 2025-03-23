@@ -10,10 +10,21 @@
 // Use packed structs for binary protocol parsing
 #pragma pack(push, 1)
 
+// Forward declare the test class
+namespace Test {
+    class SimbaParserTest_MessageType_Test;
+}
+
 namespace protocols {
 
 class SimbaSpectra {
+    friend class Test::SimbaParserTest_MessageType_Test;
 public:
+    static constexpr std::string_view ProtocolName = "Simba Spectra";
+    static constexpr std::uint8_t VersionMajor = 5;
+    static constexpr std::uint8_t VersionMinor = 0;
+    static constexpr std::uint8_t VersionPatch = 0;
+
     enum class Error {
         None,
         InsufficientData,
@@ -23,7 +34,6 @@ public:
         MalformedHeader,
         UnsupportedMessageType
     };
-    
 private:
     struct MarketDataHeader {
         uint32_t MsgSeqNum;
@@ -109,11 +119,11 @@ private:
 
     struct Decimal5 {
         int64_t mantissa;
+        int64_t operator()() const {
+            return mantissa * 1e-5;
+        }
         static consteval std::size_t size() {
             return sizeof(mantissa);
-        }
-        static consteval double exponent() {
-            return 1e-5;
         }
     };
 
@@ -205,12 +215,16 @@ private:
 public:
     SimbaSpectra(std::span<const std::byte> udpData);
     std::expected<bool, Error> parse();
-    MarketDataHeader parseMarketDataPacketHeader() const;
-    IncrementalPacketHeader parseIncrementalPacketHeader() const;
-    SbeMessageHeader parseSBEHeader() const;
-
+    const std::vector<OrderUpdate>& getOrderUpdates() const noexcept { return mOrderUpdates; }
 private:
-    std::size_t mParsingOffset;
+    MarketDataHeader parseMarketDataHeader() const;
+    IncrementalPacketHeader parseIncrementalPacketHeader() const;
+    SbeMessageHeader parseSbeMessageHeader() const;
+    OrderUpdate parseOrderUpdate() const;
+    OrderExecution parseOrderExecution() const;
+    OrderBookSnapshot parseOrderBookSnapshot() const;
+
+    mutable std::size_t mParsingOffset;
     std::span<const std::byte> mUdpData;
     std::vector<OrderUpdate> mOrderUpdates;
     std::vector<OrderExecution> mOrderExecutions;
