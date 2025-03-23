@@ -51,5 +51,29 @@ namespace Test {
         const std::vector<protocols::OrderExecution>& orderExecutions = simba.getOrderExecutions();
         EXPECT_EQ(orderExecutions.size(), 0);
     }
+    TEST(SimbaParserTest, SingleOrderBookSnapshot) {
+        pcap::Parser parser;
+        parser.open(pcapPath);
+        auto record = parser.readNextRecord().value();
+        for (int i = 0; i < 8; i++) {
+            record = parser.readNextRecord().value();
+        }
+        protocols::Ethernet frame(record.getData());
+        frame.parse();
+        protocols::Ipv4 ipv4(frame.getPayload());
+        ipv4.parse();
+        protocols::Udp udp(ipv4.payload());
+        auto parsed = udp.parse();
+        protocols::SimbaSpectra simba(udp.getPayload());
+        auto result = simba.parse();
+        EXPECT_TRUE(result.has_value());
+        const std::vector<protocols::OrderBookSnapshot>& orderBookSnapshots = simba.getOrderBookSnapshots();
+        EXPECT_EQ(orderBookSnapshots.size(), 1);
+        const protocols::OrderBookSnapshot& orderBookSnapshot = orderBookSnapshots.front();
+        EXPECT_EQ(orderBookSnapshot.SecurityID(), 3104361);
+        EXPECT_EQ(orderBookSnapshot.LastMsgSeqNumProcessed(), 70157230);
+        EXPECT_EQ(orderBookSnapshot.RptSeq(), 242796);
+        EXPECT_EQ(orderBookSnapshot.ExchangeTradingSessionID(), 6902);
+    }
 
 } // namespace

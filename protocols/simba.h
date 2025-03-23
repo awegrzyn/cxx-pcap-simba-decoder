@@ -11,6 +11,7 @@
 #pragma pack(push, 1)
 #include "simba/OrderUpdate.h"
 #include "simba/OrderExecution.h"
+#include "simba/OrderBookSnapshot.h"
 
 namespace protocols {
 
@@ -173,14 +174,14 @@ public:
     std::expected<bool, Error> parse();
     const std::vector<OrderUpdate>& getOrderUpdates() const noexcept { return mOrderUpdates; }
     const std::vector<OrderExecution>& getOrderExecutions() const noexcept { return mOrderExecutions; }
-    //const std::vector<OrderBookSnapshot>& getOrderBookSnapshots() const noexcept { return mOrderBookSnapshots; }
+    const std::vector<OrderBookSnapshot>& getOrderBookSnapshots() const noexcept { return mOrderBookSnapshots; }
 private:
     mutable std::size_t mParsingOffset;
     void advanceOffset(std::size_t size) { mParsingOffset += size; }
     std::span<const std::byte> mUdpData;
     std::vector<OrderUpdate> mOrderUpdates;
     std::vector<OrderExecution> mOrderExecutions;
-    //std::vector<OrderBookSnapshot> mOrderBookSnapshots;
+    std::vector<OrderBookSnapshot> mOrderBookSnapshots;
 };
 
 } // namespace protocols

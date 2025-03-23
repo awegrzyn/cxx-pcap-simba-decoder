@@ -34,38 +34,14 @@ std::expected<bool, SimbaSpectra::Error> SimbaSpectra::parse() {
                 mOrderExecutions.emplace_back(mUdpData.begin() + mParsingOffset);
                 advanceOffset(OrderExecution::size());
                 break;
-            /*case OrderBookSnapshot::templateId():
-                //mOrderBookSnapshots.emplace_back(parseOrderBookSnapshot());
-                break;*/
+            case OrderBookSnapshot::templateId():
+                mOrderBookSnapshots.emplace_back(mUdpData.begin() + mParsingOffset);
+                advanceOffset(OrderBookSnapshot::size());
+                break;
             default:
                 mParsingOffset += sbeHeader.BlockLength();
         }
     }
     return true;
 }
-/*
-SimbaSpectra::OrderUpdate SimbaSpectra::parseOrderUpdate() const {
-    OrderUpdate update;
-    std::memcpy(&update, mUdpData.data() + mParsingOffset, OrderUpdate::size());
-    mParsingOffset += OrderUpdate::size();
-    return update;
-}
-
-SimbaSpectra::OrderExecution SimbaSpectra::parseOrderExecution() const {
-    OrderExecution execution;
-    std::memcpy(&execution, mUdpData.data() + mParsingOffset, OrderExecution::size());
-    mParsingOffset += OrderExecution::size();
-    return execution;
-}
-SimbaSpectra::OrderBookSnapshot SimbaSpectra::parseOrderBookSnapshot() const {
-    OrderBookSnapshot snapshot;
-    std::memcpy(&snapshot, mUdpData.data() + mParsingOffset, OrderBookSnapshot::size());
-    mParsingOffset += OrderBookSnapshot::size();
-    snapshot.entries.resize(snapshot.NoMDEntries.numInGroup);
-    for (auto& entry : snapshot.entries) {
-        std::memcpy(&entry, mUdpData.data() + mParsingOffset, OrderBookSnapshot::Entry::size());
-        mParsingOffset += OrderBookSnapshot::Entry::size();
-    }
-    return snapshot;
-}*/
 } // namespace protocols
