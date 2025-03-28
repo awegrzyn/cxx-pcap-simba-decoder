@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef PROTOCOLS_SIMBA_ORDERUPDATE_H
 #define PROTOCOLS_SIMBA_ORDERUPDATE_H
 
@@ -8,15 +13,18 @@
 #include "common.h"
 
 namespace protocols {
-// int64_t MDEntryID
-// Decimal5 MDEntryPx
-// int64_t MDEntrySize
-// MDFlagsSet MDFlags
-// uint64_t MDFlags2
-// int32_t SecurityID
-// uint32_t RptSeq
-// MDUpdateAction MDUpdateAction_
-// MDEntryType MDEntryType_
+
+/// OrderUpdate
+/// Consists of 8 fields:
+/// - MDEntryID: ID of the market data entry (int64_t)
+/// - MDEntryPx: Price of the market data entry (Decimal5)
+/// - MDEntrySize: Size of the market data entry (int64_t)
+/// - MDFlags: Flags indicating the type of market data entry (MDFlagsSet)
+/// - MDFlags2: Additional flags (uint64_t)
+/// - SecurityID: ID of the security (int32_t)
+/// - RptSeq: Sequence number of the report (uint32_t)
+/// - MDUpdateAction_: Action to be taken (MDUpdateAction)
+/// - MDEntryType_: Type of the market data entry (MDEntryType)
 class OrderUpdate {
 public:
     static consteval std::size_t size() {

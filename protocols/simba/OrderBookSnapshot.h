@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef PROTOCOLS_SIMBA_ORDERBOOKSNAPSHOT_H
 #define PROTOCOLS_SIMBA_ORDERBOOKSNAPSHOT_H
 
@@ -10,21 +15,22 @@
 
 namespace protocols {
 
-// int32_t SecurityID;
-// uint32_t LastMsgSeqNumProcessed;
-// uint32_t RptSeq;
-// uint32_t ExchangeTradingSessionID;
-// GroupSize NoMDEntries;
-// struct Entry {
-//    int64_t MDEntryID;
-//    uint64_t TransactTime;
-//    Decimal5NULL MDEntryPx;
-//    int64_t MDEntrySize;
-//    int64_t TradeID;
-//    MDFlagsSet MDFlags;
-//    uint64_t MDFlags2;
-//    MDEntryType MDEntryType_;
-//};
+/// OrderBookSnapshot (16 bytes + size of all entries)
+/// Consists of 5 fields:
+/// - SecurityID: ID of the security (int32_t)
+/// - LastMsgSeqNumProcessed: Sequence number of the last message processed (uint32_t)
+/// - RptSeq: Sequence number of the report (uint32_t)
+/// - ExchangeTradingSessionID: ID of the exchange trading session (uint32_t)
+/// - NoMDEntries: Number of market data entries (GroupSize)
+/// In addition it stores a variable number of entries, each consisting of 8 fields:
+/// - MDEntryID: ID of the market data entry (int64_t)
+/// - TransactTime: Time the transaction occurred (uint64_t)
+/// - MDEntryPx: Price of the market data entry (Decimal5NULL)
+/// - MDEntrySize: Size of the market data entry (int64_t)
+/// - TradeID: ID of the trade (int64_t)
+/// - MDFlags: Flags indicating the type of market data entry (MDFlagsSet)
+/// - MDFlags2: Additional flags (uint64_t)
+/// - MDEntryType_: Type of the market data entry (MDEntryType)
 class OrderBookSnapshot {
 public:
     struct Entry {

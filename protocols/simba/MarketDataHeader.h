@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef MARKETDATAHEADER_H
 #define MARKETDATAHEADER_H
 
@@ -6,15 +11,20 @@
 #include <cstddef>
 #include <cassert>
 
-// uint32_t MsgSeqNum;
-// uint16_t MsgSize;
-// uint16_t MsgFlags;
-// uint64_t SendingTime;
+/// Market Data Packet Header (16 bytes)
+/// Consists of 4 fields:
+/// - MsgSeqNum: Sequence number of the message (uint32_t)
+/// - MsgSize: Size of the message excluding the header (uint16_t)
+/// - MsgFlags: Flags indicating the type of message (uint16_t)
+/// - SendingTime: Time the message was sent (uint64_t)
 class MarketDataHeader {
 public:
+    /// \return Size of the header in bytes
     static consteval std::size_t size() {
         return sizeof(uint32_t) + sizeof(uint16_t) + sizeof(uint16_t) + sizeof(uint64_t);
     }
+    /// Constructor
+    /// \param rawDataBegin Pointer to the beginning of the raw data
     MarketDataHeader(const std::span<const std::byte>::iterator rawDataBegin) : mRawHeader(rawDataBegin, MarketDataHeader::size()) {
         assert(rawHeader.size() < MarketDataHeader::size());
     }
@@ -28,6 +38,7 @@ public:
     bool IsIncremental() const { return MsgFlags() & 0x8; }
     bool IsPossDupFlag() const { return MsgFlags() & 0x10; }
 private:
+    /// The raw header data
     const std::span<const std::byte> mRawHeader;
 };
 

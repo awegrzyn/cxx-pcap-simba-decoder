@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef ETHERNET_H
 #define ETHERNET_H
 
@@ -8,47 +13,45 @@
 
 namespace protocols {
 
-/**
- * Class representing an Ethernet frame
- */
 class Ethernet {
 public:
-    // Error types for Ethernet parsing
     enum class Error {
         InsufficientData,
         InvalidFormat
     };
-    // Constructor
+    /// Constructor
+    /// \param data The raw Ethernet frame
     Ethernet(const std::span<const std::byte> data)
         : mRecordData(data) {}
 
-    // Parse Ethernet frame from raw data
+    /// Parses the Ethernet frame
+    /// \return The length of the Ethernet frame on success, or an error on failure
     std::expected<size_t, Ethernet::Error> parse();
     
-    // Get payload data
+    /// \return Returns Ethernet payload
     const std::span<const std::byte> getPayload() const {
         return mPayload;
     }
 
-    // Get destination MAC address as string
+    /// \return Returns Ethernet source MAC address
     const std::span<const std::byte> getSourceMac() const {
         return mSourceMac;
     }
-    // Get source MAC address as string
+    /// \return Returns Ethernet destination MAC address
     const std::span<const std::byte> getDestMac() const {
         return mDestMac;
     }
 private:
-    // Raw record data
+    /// Raw record data
     const std::span<const std::byte> mRecordData;
 
-    // Destination MAC address
+    /// Destination MAC address
     std::span<const std::byte> mDestMac;
 
-    // Source MAC address
+    /// Source MAC address
     std::span<const std::byte> mSourceMac;
 
-    // Payload data
+    /// Payload data
     std::span<const std::byte> mPayload;
 };
 

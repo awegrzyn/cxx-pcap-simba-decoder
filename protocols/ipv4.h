@@ -1,8 +1,13 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef PROTOCOLS_IPV4_H
 #define PROTOCOLS_IPV4_H
 
 #include <cstdint>
-#include <cstddef>  // For std::byte
+#include <cstddef>
 #include <span>
 #include <expected>
 #include <vector>
@@ -20,27 +25,34 @@ public:
         ChecksumError
     };
 
-    // Constructor takes a span of raw packet data
+    /// Constructor
+    /// \param data The raw IPv4 packet
     Ipv4(std::span<const std::byte> data) : mEthernetData(data) {}
 
-    // Parse the IPv4 packet
+    /// Parses the IPv4 header and payload
+    /// \return The length of the IPv4 packet on success, or an error on failure
     std::expected<size_t, Error> parse();
 
-    // Raw access to addresses
+    /// \return IPv4 source address
     std::span<const std::byte> getSourceIp() const { return mSourceIP; }
+
+    /// \return IPv4 destination address
     std::span<const std::byte> getDestIp() const { return mDestIP; }
 
-    // Access to the payload
+    /// \return IPv4 payload
     std::span<const std::byte> payload() const { return mPayload; }
 
 private:
+    /// The raw IPv4 packet data
     std::span<const std::byte> mEthernetData;
 
-    // IP addresses are stored as spans into the original data
+    /// IPv4 source address in byte representation
     std::span<const std::byte> mSourceIP;
+
+    /// IPv4 destination address in byte representation
     std::span<const std::byte> mDestIP;
 
-    // Payload (data after the header)
+    /// IPv4 payload data
     std::span<const std::byte> mPayload;
 };
 

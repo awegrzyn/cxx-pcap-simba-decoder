@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef PROTOCOLS_SIMBA_ORDEREXECUTION_H
 #define PROTOCOLS_SIMBA_ORDEREXECUTION_H
 
@@ -9,18 +14,20 @@
 
 namespace protocols {
 
-// int64_t MDEntryID
-// Decimal5NULL MDEntryPx
-// int64_t MDEntrySize
-// Decimal5 LastPx
-// int64_t LastQty
-// int64_t TradeID
-// MDFlagsSet MDFlags
-// uint64_t MDFlags2
-// int32_t SecurityID
-// uint32_t RptSeq
-// MDUpdateAction MDUpdateAction_
-// MDEntryType MDEntryType_
+/// OrderExecution
+/// Consists of 12 fields:
+/// - MDEntryID: ID of the market data entry (int64_t)
+/// - MDEntryPx: Price of the market data entry (Decimal5NULL)
+/// - MDEntrySize: Size of the market data entry (int64_t)
+/// - LastPx: Price of the last trade (Decimal5)
+/// - LastQty: Quantity of the last trade (int64_t)
+/// - TradeID: ID of the trade (int64_t)
+/// - MDFlags: Flags indicating the type of market data entry (MDFlagsSet)
+/// - MDFlags2: Additional flags (uint64_t)
+/// - SecurityID: ID of the security (int32_t)
+/// - RptSeq: Sequence number of the report (uint32_t)
+/// - MDUpdateAction_: Action to be taken (MDUpdateAction)
+/// - MDEntryType_: Type of the market data entry (MDEntryType)
 class OrderExecution {
 public:
     static consteval std::size_t size() {

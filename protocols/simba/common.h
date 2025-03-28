@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef COMMON_H
 #define COMMON_H
 #include <cstdint>

@@ -1,11 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.11.0 FATAL_ERROR)
 
-project(PcapSimba
-    VERSION 0.0.1
+project(PcapSimbaDecoder
+    VERSION 1.0.0
     LANGUAGES CXX
 )
 
-find_package(GTest CONFIG REQUIRED)
+find_package(GTest CONFIG)
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()

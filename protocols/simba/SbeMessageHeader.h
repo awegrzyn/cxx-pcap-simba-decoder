@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef SBE_MESSAGE_HEADER_H
 #define SBE_MESSAGE_HEADER_H
 
@@ -6,10 +11,12 @@
 #include <cstddef>
 #include <cassert>
 
-// uint16_t BlockLength;
-// uint16_t TemplateId;
-// uint16_t SchemaId;
-// uint16_t Version;
+/// SBE message header (8 bytes)
+/// Consists of 4 fields:
+/// - BlockLength: Length of the message excluding the header (uint16_t)
+/// - TemplateId: ID of the message template (uint16_t)
+/// - SchemaId: ID of the schema (uint16_t)
+/// - Version: Version of the schema (uint16_t)
 class SbeMessageHeader {
 public:
     static consteval std::size_t size() {

@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #ifndef PCAP_PARSER_H
 #define PCAP_PARSER_H
 
@@ -40,12 +45,24 @@ class Parser {
 public:
     Parser();
     ~Parser();
+
+    /// Reads next record from PCAP file
+    /// \return Record object containing the data or an error
     std::expected<Record, Error> readNextRecord();
+
+    /// \return The file header
     const FileHeader& getFileHeader() const { return mFileHeader; }
+
+    /// Opens a PCAP file for reading
     std::expected<void, Error> open(const std::filesystem::path &path);
 private:
+    /// File stream for reading the PCAP file
     std::ifstream mFile;
+
+    /// File header
     FileHeader mFileHeader;
+
+    /// Indicates if the file uses nanosecond timestamps
     bool mIsNanosecond;
 };
 

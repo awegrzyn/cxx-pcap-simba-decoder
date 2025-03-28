@@ -1,3 +1,8 @@
+/*
+ * Author: Adam Wegrzynek
+ * License: GPL-3.0
+ */
+
 #include "pcap/parser.h"
 #include "protocols/ethernet.h"
 #include "protocols/ipv4.h"
